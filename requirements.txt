@@ -1,7 +1,2 @@
-Flask
-Pillow
-requests
-
-
-
-
+flask
+datetime

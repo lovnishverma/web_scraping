@@ -1,23 +1,21 @@
-<!DOCTYPE html>
 <html>
-<head>
-    <title>Image Rotator</title>
-</head>
-<body>
-    <h1>Image Rotator</h1>
-    <form action="/rotate-image" method="get">
-        <label for="url">Image URL:</label>
-        <input type="text" name="url" id="url" required>
-        <br>
-        <label for="degree">Rotation Degree:</label>
-        <input type="number" name="degree" id="degree" value="0">
-        <br>
-        <button type="submit">Rotate Image</button>
-    </form>
-
-    {% if rotated_image %}
-    <h2>Rotated Image:</h2>
-    <img src="data:image/jpeg;base64,{{ rotated_image }}" alt="Rotated Image">
-    {% endif %}
-</body>
+  <body>
+   <h1>
+     
+     Hello From Flask index page</h1> <br>
+    <h2>
+     Current time is  {{now}}
+    </h2>
+    <hr>
+    <a href="/page">click here to go to page</a> <br>
+    <hr>
+    <a href="/page1">click here to go to page1</a> <br>
+    <hr>
+    <a href="/page2">click here to go to page2</a> <br>
+    <hr>
+    <a href="/page3">click here to go to page3</a> <br>
+    <hr>
+    <br>
+      <a href="/">click here to go to refresh</a> <br>
+  </body>
 </html>
