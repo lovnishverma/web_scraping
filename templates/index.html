@@ -1,34 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Image Rotation</title>
+    <title>Image Rotator</title>
 </head>
 <body>
-    <h1>Image Rotation</h1>
+    <h1>Image Rotator</h1>
     <form action="/rotate-image" method="get">
-        <label for="url">Image URL:</label><br>
-        <input type="text" id="url" name="url" required><br>
-        
-        <label for="degree">Rotation Degree:</label><br>
-        <input type="number" id="degree" name="degree" min="-360" max="360" step="1" value="0" required><br>
-        
+        <label for="url">Image URL:</label>
+        <input type="text" name="url" id="url" required>
+        <br>
+        <label for="degree">Rotation Degree:</label>
+        <input type="number" name="degree" id="degree" value="0">
+        <br>
         <button type="submit">Rotate Image</button>
     </form>
-    <br>
-    <img id="rotated-image" src="" alt="Rotated Image">
-    <script>
-        document.querySelector('form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const url = e.target.url.value;
-            const degree = e.target.degree.value;
-            
-            const response = await fetch(`/rotate-image?url=${encodeURIComponent(url)}&degree=${degree}`);
-            if (response.ok) {
-                const blob = await response.blob();
-                const objectURL = URL.createObjectURL(blob);
-                document.getElementById('rotated-image').src = objectURL;
-            }
-        });
-    </script>
+
+    {% if rotated_image %}
+    <h2>Rotated Image:</h2>
+    <img src="data:image/jpeg;base64,{{ rotated_image }}" alt="Rotated Image">
+    {% endif %}
 </body>
 </html>
