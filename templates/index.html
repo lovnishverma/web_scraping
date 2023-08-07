@@ -1,21 +1,34 @@
+<!DOCTYPE html>
 <html>
-  <body>
-   <h1>
-     
-     Hello From Flask index page</h1> <br>
-    <h2>
-     Current time is  {{now}}
-    </h2>
-    <hr>
-    <a href="/page">click here to go to page</a> <br>
-    <hr>
-    <a href="/page1">click here to go to page1</a> <br>
-    <hr>
-    <a href="/page2">click here to go to page2</a> <br>
-    <hr>
-    <a href="/page3">click here to go to page3</a> <br>
-    <hr>
+<head>
+    <title>Image Rotation</title>
+</head>
+<body>
+    <h1>Image Rotation</h1>
+    <form action="/rotate-image" method="get">
+        <label for="url">Image URL:</label><br>
+        <input type="text" id="url" name="url" required><br>
+        
+        <label for="degree">Rotation Degree:</label><br>
+        <input type="number" id="degree" name="degree" min="-360" max="360" step="1" value="0" required><br>
+        
+        <button type="submit">Rotate Image</button>
+    </form>
     <br>
-      <a href="/">click here to go to refresh</a> <br>
-  </body>
+    <img id="rotated-image" src="" alt="Rotated Image">
+    <script>
+        document.querySelector('form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const url = e.target.url.value;
+            const degree = e.target.degree.value;
+            
+            const response = await fetch(`/rotate-image?url=${encodeURIComponent(url)}&degree=${degree}`);
+            if (response.ok) {
+                const blob = await response.blob();
+                const objectURL = URL.createObjectURL(blob);
+                document.getElementById('rotated-image').src = objectURL;
+            }
+        });
+    </script>
+</body>
 </html>

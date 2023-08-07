@@ -1,34 +1,40 @@
-from flask import Flask, request, Response
-import sys
-from Pillow import Image
+from flask import Flask, request, Response, render_template
+from PIL import Image
+import requests
 from io import BytesIO
 
 app = Flask(__name__)
 
-if sys.version_info.major == 2:
-    import urllib2 as urllib
-else:
-    import urllib.request as urllib
+@app.route("/")
+def index():
+    return render_template("index.html")
 
-@app.route("/rotate-image")
+@app.route("/rotate-image", methods=['GET'])
 def rotate_image():
     try:
-        degree = int(request.args.get('degree', 0))
-        url = request.args.get('url')
+    degree = int(request.args.get('degree', 0))
+    url = request.args.get('url')
+    print("Received URL:", url)  # Print URL for debugging
 
-        response = urllib.urlopen(url) if sys.version_info.major == 2 else urllib.urlopen(url)
-        img_data = response.read()
-        img = Image.open(BytesIO(img_data))
+  
+# @app.route("/rotate-image", methods=['GET'])
+# def rotate_image():
+#     try:
+#         degree = int(request.args.get('degree', 0))
+#         url = request.args.get('url')
 
-        rotated_img = img.rotate(degree, expand=True)
+#         response = requests.get(url)
+#         img = Image.open(BytesIO(response.content))
 
-        output = BytesIO()
-        rotated_img.save(output, format='JPEG')
-        output.seek(0)
+#         rotated_img = img.rotate(degree, expand=True)
 
-        return Response(output, content_type='image/jpeg')
-    except Exception as e:
-        return str(e), 400
+#         output = BytesIO()
+#         rotated_img.save(output, format='JPEG')
+#         output.seek(0)
+
+#         return Response(output, content_type='image/jpeg')
+#     except Exception as e:
+#         return str(e), 400
 
 if __name__ == "__main__":
     app.run(debug=True)

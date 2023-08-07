@@ -1,4 +1,8 @@
 Flask
 Pillow
+requests
+
+
+
 
 
