@@ -1,27 +1,34 @@
-from flask import *
-from datetime import datetime
+from flask import Flask, request, Response
+import sys
+from Pillow import Image
+from io import BytesIO
 
-app=Flask(__name__)
+app = Flask(__name__)
 
-@app.route('/')
-def home():
-  return render_template("index.html", now=datetime.now())
+if sys.version_info.major == 2:
+    import urllib2 as urllib
+else:
+    import urllib.request as urllib
 
-@app.route('/page')
-def page():
-  return render_template("page.html")
+@app.route("/rotate-image")
+def rotate_image():
+    try:
+        degree = int(request.args.get('degree', 0))
+        url = request.args.get('url')
 
-@app.route('/page1')
-def page1():
-  return render_template("page1.html")
+        response = urllib.urlopen(url) if sys.version_info.major == 2 else urllib.urlopen(url)
+        img_data = response.read()
+        img = Image.open(BytesIO(img_data))
 
-@app.route('/page2')
-def page2():
-  return render_template("page2.html")
+        rotated_img = img.rotate(degree, expand=True)
 
-@app.route('/page3')
-def page3():
-  return render_template("page3.html")
+        output = BytesIO()
+        rotated_img.save(output, format='JPEG')
+        output.seek(0)
 
-if __name__ == '__main__':
-  app.run()
+        return Response(output, content_type='image/jpeg')
+    except Exception as e:
+        return str(e), 400
+
+if __name__ == "__main__":
+    app.run(debug=True)
