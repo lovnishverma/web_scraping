@@ -27,7 +27,7 @@ def scrape(url, tag):
         soup = BeautifulSoup(data, 'html.parser')
 
         # Create a dictionary to store the scraped data
-        json_data = {'headings': []}
+        json_data = {'elements': []}
 
         # Search for the elements of the specified tag
         selection = soup.find_all(tag)
@@ -35,11 +35,12 @@ def scrape(url, tag):
         # Add the elements to the dictionary
         for el in selection:
             text = el.get_text()
-            json_data['headings'].append(text)
+            json_data['elements'].append(text)
 
         return json_data
     except Exception as e:
         return {'error': str(e)}
+
 
 # Start the app running on the web server
 if __name__ == "__main__":
