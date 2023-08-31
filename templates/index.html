@@ -44,26 +44,25 @@
     </style>
 </head>
 <body>
-   <div class="container">
-    <h1>Web Scraping Example</h1>
-    <form method="post">
-        <label for="url">URL:</label>
-        <input type="text" id="url" name="url" value="{{ url }}" required>
-        <label for="tag">Tag:</label>
-        <input type="text" id="tag" name="tag" value="{{ tag }}" required>
-        <input type="submit" value="Scrape">
-    </form>
-    {% if elements %}
-    <h2>Scraped Elements</h2>
-    <ul>
-        {% for element in elements %}
-        <li>{{ element }}</li>
-        {% endfor %}
-    </ul>
-    {% elif 'error' in elements %}
-    <p style="color: red;">Error: {{ elements.error }}</p>
-    {% endif %}
-</div>
-
+    <div class="container">
+      <center> <h1>Web Scraping Example</h1></center>
+        <form method="post">
+            <label for="url">URL:</label>
+            <input type="text" id="url" name="url" value="{{ url }}" required>
+            <label for="tag">Tag:</label>
+            <input type="text" id="tag" name="tag" value="{{ tag }}" required>
+            <center><input type="submit" value="Scrape"></center>
+        </form>
+        {% if headings %}
+        <h2>Scraped Headings</h2>
+        <ul>
+            {% for heading in headings %}
+            <li>{{ heading }}</li>
+            {% endfor %}
+        </ul>
+        {% elif 'error' in headings %}
+        <p style="color: red;">Error: {{ headings.error }}</p>
+        {% endif %}
+    </div>
 </body>
 </html>
