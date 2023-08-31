@@ -1,8 +1,3 @@
 flask
-datetime
-nltk
 requests
-numpy
 bs4
-matplotlib
-wordcloud
