@@ -2,13 +2,67 @@
 <html>
 <head>
     <title>Web Scraping Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 5px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h1>Scraped Headings</h1>
-    <ul>
-        {% for heading in headings %}
+    <div class="container">
+        <h1>Web Scraping Example</h1>
+        <form method="post">
+            <label for="url">URL:</label>
+            <input type="text" id="url" name="url" value="{{ url }}" required>
+            <label for="tag">Tag:</label>
+            <input type="text" id="tag" name="tag" value="{{ tag }}" required>
+            <input type="submit" value="Scrape">
+        </form>
+        {% if headings %}
+        <h2>Scraped Headings</h2>
+        <ul>
+            {% for heading in headings %}
             <li>{{ heading }}</li>
-        {% endfor %}
-    </ul>
+            {% endfor %}
+        </ul>
+        {% elif 'error' in headings %}
+        <p style="color: red;">Error: {{ headings.error }}</p>
+        {% endif %}
+    </div>
 </body>
 </html>
