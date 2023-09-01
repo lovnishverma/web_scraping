@@ -8,14 +8,14 @@ app = Flask(__name__)
 @app.route("/", methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        urls = request.form.getlist('urls')  # Get a list of URLs from the form
+        urls = request.form['urls'].split(',')  # Split comma-separated URLs into a list
         tag = request.form['tag']
         if urls and tag:
-            all_json_data = []  # List to store data from multiple websites
+            all_website_data = []  # List to store data from multiple websites
             for url in urls:
-                json_data = scrape(url, tag)
-                all_json_data.append({'url': url, 'data': json_data})
-            return render_template("index.html", websites=all_json_data, tag=tag)
+                json_data = scrape(url.strip(), tag)
+                all_website_data.append({'url': url, 'data': json_data})
+            return render_template("index.html", websites=all_website_data, tag=tag)
     return render_template("index.html")
 
 # Function to scrape a page
