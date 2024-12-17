@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scraped Results</title>
+</head>
+<body>
+    <h1>Scraped Results</h1>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% else %}
+        <h2>Title: {{ title }}</h2>
+        <h3>Content from: <a href="{{ url }}" target="_blank">{{ url }}</a></h3>
+        <h3>Paragraphs:</h3>
+        <ul>
+            {% for paragraph in paragraphs %}
+                <li>{{ paragraph }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <br>
+    <a href="/">Go Back</a>
+</body>
+</html>

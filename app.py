@@ -1,49 +1,37 @@
-from flask import Flask, jsonify, render_template, request, redirect, url_for
+from flask import Flask, render_template, request
 import requests
 from bs4 import BeautifulSoup
 
 app = Flask(__name__)
 
-# Handle the default web page request
-@app.route("/", methods=['GET', 'POST'])
+# Home Route - Display the Form
+@app.route("/")
 def index():
-    if request.method == 'POST':
-        urls = request.form['urls'].split(',')  # Split comma-separated URLs into a list
-        tag = request.form['tag']
-        if urls and tag:
-            all_website_data = []  # List to store data from multiple websites
-            for url in urls:
-                json_data = scrape(url.strip(), tag)
-                all_website_data.append({'url': url, 'data': json_data})
-            return render_template("index.html", websites=all_website_data, tag=tag)
     return render_template("index.html")
 
-# Function to scrape a page
-def scrape(url, tag):
-    try:
-        # Make the HTTP request to the URL to get the data
-        response = requests.get(url)
-        response.raise_for_status()  # Raise an exception for HTTP errors
-        data = response.content
+# Scraping Route - Process URL and Display Results
+@app.route("/scrape", methods=["POST"])
+def scrape():
+    if request.method == "POST":
+        # Get URL from the Form
+        url = request.form["url"]
+        try:
+            # Fetch page content
+            response = requests.get(url)
+            response.raise_for_status()  # Raise exception for invalid responses
+            
+            # Parse content with BeautifulSoup
+            soup = BeautifulSoup(response.content, "html.parser")
+            
+            # Extract Title and All Paragraph Texts
+            title = soup.title.string if soup.title else "No Title Found"
+            paragraphs = [p.get_text() for p in soup.find_all("p")]
+            
+            return render_template("result.html", title=title, paragraphs=paragraphs, url=url)
+        
+        except Exception as e:
+            error_message = "An error occurred: {str(e)}"
+            return render_template("result.html", error=error_message)
 
-        # Load the HTML into BeautifulSoup web scraper
-        soup = BeautifulSoup(data, 'html.parser')
-
-        # Create a dictionary to store the scraped data
-        json_data = {'headings': []}
-
-        # Search for the elements of the specified tag
-        selection = soup.find_all(tag)
-
-        # Add the elements to the dictionary
-        for el in selection:
-            text = el.get_text()
-            json_data['headings'].append(text)
-
-        return json_data
-    except Exception as e:
-        return {'error': str(e)}
-
-# Start the app running on the web server
 if __name__ == "__main__":
     app.run(debug=True)
