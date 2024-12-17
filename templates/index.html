@@ -5,11 +5,16 @@
     <title>Web Scraper</title>
 </head>
 <body>
-    <h1>Simple Web Scraper</h1>
-    <form action="/scrape" method="POST">
-        <label for="url">Enter URL:</label><br>
-        <input type="text" id="url" name="url" placeholder="https://example.com" required><br><br>
-        <button type="submit">Scrape</button>
-    </form>
+    <h1>Customizable Web Scraper</h1>
+<form action="/scrape" method="POST">
+    <label for="url">Enter URL:</label><br>
+    <input type="text" id="url" name="url" placeholder="https://example.com" required><br><br>
+
+    <label for="tag">Enter Tag to Scrape (e.g., p, h1, img):</label><br>
+    <input type="text" id="tag" name="tag" placeholder="p" required><br><br>
+
+    <button type="submit">Scrape</button>
+</form>
+
 </body>
 </html>

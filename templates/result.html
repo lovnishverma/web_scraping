@@ -11,10 +11,12 @@
     {% else %}
         <h2>Title: {{ title }}</h2>
         <h3>Content from: <a href="{{ url }}" target="_blank">{{ url }}</a></h3>
-        <h3>Paragraphs:</h3>
+        <h3>Scraped Elements for Tag: &lt;{{ tag }}&gt;</h3>
         <ul>
-            {% for paragraph in paragraphs %}
-                <li>{{ paragraph }}</li>
+            {% for element in elements %}
+                <li>{{ element }}</li>
+            {% else %}
+                <li>No content found for tag &lt;{{ tag }}&gt;.</li>
             {% endfor %}
         </ul>
     {% endif %}
