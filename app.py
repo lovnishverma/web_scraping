@@ -23,8 +23,13 @@ def scrape():
             return render_template("result.html", error=error_message)
 
         try:
-            # Fetch page content
-            response = requests.get(url)
+            # Custom headers to mimic a real browser request to bypass 403 Client Error: Forbidden for url: such errors
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+            }
+
+            # Fetch page content with custom headers
+            response = requests.get(url, headers=headers)
             response.raise_for_status()  # Raise exception for invalid responses
             
             # Parse content with BeautifulSoup
@@ -37,8 +42,9 @@ def scrape():
             return render_template("result.html", title=title, elements=elements, tag=tag, url=url)
         
         except Exception as e:
-            error_message = "An error occurred: {str(e)}"
+            error_message = "An error occurred: {}".format(str(e))  # Using str.format()
             return render_template("result.html", error=error_message)
+
 
 if __name__ == "__main__":
     app.run(debug=True)
