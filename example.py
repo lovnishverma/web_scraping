@@ -1,48 +1,66 @@
-from bs4 import BeautifulSoup
+from flask import Flask, render_template_string
 import requests
+from bs4 import BeautifulSoup
 
-# URL of the Punjab Police Whats New page
-url = 'https://www.punjabpolice.gov.in/WhatsNew.aspx'
+app = Flask(__name__)
 
-# Send GET request to the website
-from urllib3.util.retry import Retry
-from requests.adapters import HTTPAdapter
+# URL of the target website
+URL = "https://www.punjabkesari.in/"
 
-# Setup retries
-retries = Retry(total=5, backoff_factor=0.5)
-adapter = HTTPAdapter(max_retries=retries)
+# Function to scrape h3 tags
+def scrape_h3_tags(url):
+    try:
+        response = requests.get(url)
+        response.raise_for_status()  # Raise an error for bad response
+        soup = BeautifulSoup(response.content, 'html.parser')
 
-# Create session
-session = requests.Session()
-session.mount('https://', adapter)
+        # Extract and clean h3 tags
+        h3_tags = [h3.get_text(strip=True) for h3 in soup.find_all('h3') if h3.get_text(strip=True)]
+        return h3_tags
 
-# Send request
-response = session.get(url, timeout=30)
+    except Exception as e:
+        print("Error occurred: {e}")
+        return []
 
+# Flask route to display scraped h3 tags
+@app.route("/")
+def display_h3_tags():
+    h3_data = scrape_h3_tags(URL)
 
+    # HTML template for displaying data
+    html_template = """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Scraped H3 Tags</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 20px; background-color: #f9f9f9; color: #333; }
+            h1 { text-align: center; }
+            .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0px 0px 10px #ddd; }
+            .item { margin: 10px 0; padding: 10px; border: 1px solid #ddd; background-color: #f4f4f4; border-radius: 5px; }
+        </style>
+    </head>
+    <body>
+        <h1>Scraped H3 Tags from PunjabKesari</h1>
+        <div class="container">
+            {% if h3_tags %}
+                {% for tag in h3_tags %}
+                    <div class="item">{{ tag }}</div>
+                {% endfor %}
+            {% else %}
+                <p>No H3 tags found.</p>
+            {% endif %}
+        </div>
+    </body>
+    </html>
+    """
 
-# Parse the website content
-soup = BeautifulSoup(response.content, 'html.parser')
+    # Render the HTML template with scraped data
+    return render_template_string(html_template, h3_tags=h3_data)
 
-# Example: Find all <a> tags (or other tags you're interested in)
-# This will find all the links in the page
-links = soup.find_all('a')
-
-# Iterate through all found links and extract the link text and href
-for link in links:
-    link_text = link.get_text(strip=True)  # Get the visible text inside the <a> tag
-    link_href = link.get('href')  # Get the href attribute (URL of the link)
-    
-    # Only print links with meaningful text
-    if link_text:
-        print("Link Text: {link_text}")
-        print("Link Href: {link_href}")
-        print("-" * 40)
-
-# Alternatively, if you're looking for specific sections like headlines:
-# Example: Extract news items or titles from a specific section
-news_items = soup.find_all('div', class_='whats-new-item-class')  # Update the class as per actual page structure
-
-for item in news_items:
-    title = item.get_text(strip=True)
-    print("News Title: {title}")
+# Run the Flask app
+if __name__ == "__main__":
+    print("Starting Flask server")
+    app.run(debug=True)
