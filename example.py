@@ -1,24 +1,48 @@
 from bs4 import BeautifulSoup
 import requests
 
-# Example URL (this could be the URL you want to scrape)
-url = 'YOUR_TARGET_URL'
+# URL of the Punjab Police Whats New page
+url = 'https://www.punjabpolice.gov.in/WhatsNew.aspx'
 
 # Send GET request to the website
-response = requests.get(url)
-response.raise_for_status()  # Ensure the request was successful
+from urllib3.util.retry import Retry
+from requests.adapters import HTTPAdapter
+
+# Setup retries
+retries = Retry(total=5, backoff_factor=0.5)
+adapter = HTTPAdapter(max_retries=retries)
+
+# Create session
+session = requests.Session()
+session.mount('https://', adapter)
+
+# Send request
+response = session.get(url, timeout=30)
+
+
 
 # Parse the website content
 soup = BeautifulSoup(response.content, 'html.parser')
 
-# Find the <a> tag using its unique ID
-link = soup.find('a', id='ctl00_ContentPlaceHolder1_DataListNews_ctl00_LnkbtnNews')
+# Example: Find all <a> tags (or other tags you're interested in)
+# This will find all the links in the page
+links = soup.find_all('a')
 
-# Check if the link is found
-if link:
-    link_text = link.get_text()  # Extract the text inside the <a> tag
-    link_href = link.get('href')  # Extract the href attribute of the <a> tag
-    print("Link Text:", link_text)
-    print("Link Href:", link_href)
-else:
-    print("Link not found.")
+# Iterate through all found links and extract the link text and href
+for link in links:
+    link_text = link.get_text(strip=True)  # Get the visible text inside the <a> tag
+    link_href = link.get('href')  # Get the href attribute (URL of the link)
+    
+    # Only print links with meaningful text
+    if link_text:
+        print("Link Text: {link_text}")
+        print("Link Href: {link_href}")
+        print("-" * 40)
+
+# Alternatively, if you're looking for specific sections like headlines:
+# Example: Extract news items or titles from a specific section
+news_items = soup.find_all('div', class_='whats-new-item-class')  # Update the class as per actual page structure
+
+for item in news_items:
+    title = item.get_text(strip=True)
+    print("News Title: {title}")
