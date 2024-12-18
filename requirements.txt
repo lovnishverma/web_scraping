@@ -1,7 +1,6 @@
 flask
 requests
 bs4
-beautifulsoup4
 
 
 
