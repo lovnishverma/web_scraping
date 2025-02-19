@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 app = Flask(__name__)
 
 # Home Route - Display the Form
-@app.route("/", methods=["GET"])
+@app.route("/")
 def index():
     return render_template("index.html")
 
@@ -14,7 +14,7 @@ def index():
 def scrape():
     if request.method == "POST":
         # Safely get URL and tag from the Form using .get()
-        url = request.form.get("url")
+        url = request.form.get("urll")
         tag = request.form.get("tag")
 
         # Check if both URL and tag are provided
